@@ -1,0 +1,47 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-12 bg-dark text-white text-center py-2">
+        <app-cabecera></app-cabecera>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3 bg-dark text-white">
+      <app-menu-objetos (myOutputValue)="enviarObjeto($event)"></app-menu-objetos>
+    </div>
+    <div class="col-md-9 bg-light text-primary text-center">
+      <app-area-trabajo [objetoRecibido]="objetoSeleccionado" (myOutputValue2)="enviarObjeto2($event)"></app-area-trabajo>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-12 bg-dark text-white py-2">
+      <app-consola  [mensajeRecibido]="mensajeToConsole"></app-consola>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 bg-secondary text-white py-2 text-center">
+      <app-footer></app-footer>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!--
+<app-cabecera></app-cabecera>
+<app-footer></app-footer>
+
+<h1 class="container bg-dark text-white text-center my-4 py-4">ngIf show={{show}}</h1>
+
+<div class="container">
+  <button class="btn btn-warning" (click)="show=!show">Accion</button>
+  <p class="text-info" *ngIf="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fringilla tortor in dui iaculis, ac pellentesque nibh blandit. Suspendisse aliquet turpis id libero tincidunt, nec ultricies odio fringilla. Aenean tincidunt, nibh vitae egestas condimentum, arcu massa gravida augue, quis aliquet nisi augue ac augue. Nullam tincidunt a nisi ac molestie. Phasellus ultrices ex nec ultrices viverra. Morbi eleifend lectus ut arcu efficitur, at venenatis lectus auctor. Vivamus sagittis efficitur tortor a condimentum. </p>
+  <p class="text-danger">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fringilla tortor in dui iaculis, ac pellentesque nibh blandit. Suspendisse aliquet turpis id libero tincidunt, nec ultricies odio fringilla. Aenean tincidunt, nibh vitae egestas condimentum, arcu massa gravida augue, quis aliquet nisi augue ac augue. Nullam tincidunt a nisi ac molestie. Phasellus ultrices ex nec ultrices viverra. Morbi eleifend lectus ut arcu efficitur, at venenatis lectus auctor. Vivamus sagittis efficitur tortor a condimentum. </p>
+</div>
+-->

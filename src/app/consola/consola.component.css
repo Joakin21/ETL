@@ -1,0 +1,16 @@
+#consola{
+  border: 5px solid #ccc;
+}
+#cuerpoConsola{
+
+  overflow-y: auto;
+  height: 100px;
+
+}
+h3{
+  padding-left: 10px;
+}
+#mensajeConsola{
+  padding-left: 10px;
+  color: white;
+}

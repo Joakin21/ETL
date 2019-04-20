@@ -1,1 +1,1 @@
-[{"TABLE_NAME": "alumnos"}, {"TABLE_NAME": "auth_group"}, {"TABLE_NAME": "auth_group_permissions"}, {"TABLE_NAME": "auth_permission"}, {"TABLE_NAME": "auth_user"}, {"TABLE_NAME": "auth_user_groups"}, {"TABLE_NAME": "auth_user_user_permissions"}, {"TABLE_NAME": "django_admin_log"}, {"TABLE_NAME": "django_content_type"}, {"TABLE_NAME": "django_migrations"}, {"TABLE_NAME": "django_session"}]
+[{"TABLE_NAME": "clientes"}, {"TABLE_NAME": "desafio"}, {"TABLE_NAME": "empleados"}, {"TABLE_NAME": "productos"}, {"TABLE_NAME": "pruebaUnion"}]

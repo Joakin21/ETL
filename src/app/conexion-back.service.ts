@@ -12,12 +12,7 @@ export class ConexionBackService {
   //aTablas:string[]=[]
   constructor(private http: HttpClient) { }
 
-  getDatos(tableName:any): Observable<any[]>{
-    return this.http.get<any[]>('api/datosTable/'+tableName);
-  }
-  getAtributosTable(tableName:any): Observable<any[]>{
-    return this.http.get<any[]>('api/atributosTable/'+tableName);
-  }
+
   getTablas(): Observable<any[]>{
     return this.http.get<any[]>('api/tablas');
   }
@@ -36,12 +31,6 @@ export class ConexionBackService {
   getLoadResult(nameFile:any): Observable<any>{
     return this.http.get<any>('api/load/'+nameFile);
   }
-  /*getCambiarValor(cambio:any): Observable<any>{
-    //console.log(datosConexion);
-    return this.http.post<any[]>('api/cambiarValor',cambio);
-  }*/
-  getCambiarValor(cambio:any): Observable<any[]>{
-    return this.http.get<any[]>('api/cambiarValor/'+cambio);
-  }
+
 
 }

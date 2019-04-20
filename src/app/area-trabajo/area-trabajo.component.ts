@@ -20,12 +20,6 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
   //COMPONENTE 1: EXTRACCION DE TABLA ESPECIFICA DE UNA BASE DE DATOS - Variables
 
-  tablas:any[];
-  datosTablaElegida:any[];
-  atributo:any[];
-  resultConexion:boolean;
-  mensajeError:string = "Aun no hay conexion";
-  tablaElejida:string="";
   //END Variables componente 1
 
   //COMPONENTE 2: conectar solo base de datos - Variables
@@ -60,62 +54,24 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   }
   //COMPONENTE 1: EXTRACCION DE TABLA ESPECIFICA DE UNA BASE DE DATOS - funciones y servicios
   //Tabla seleccionada desde el modal
-  tablaElegida(tab):void{
-    this.getDatos(tab.TABLE_NAME);//pasa los datos a un arreglo
-    this.getAtributosTable(tab.TABLE_NAME);
-    var tabla = tab.TABLE_NAME;
-    this.tablaElejida=tabla;
-  }
-  //servicios
-  getTablas ():void{
-    this.conexionBackService.getTablas().subscribe(tablas =>(this.tablas = tablas));
-  }
 
-  getDatos (tableName):void{
-    this.conexionBackService.getDatos(tableName).subscribe(tasks =>(
-      this.datosTablaElegida=tasks
-    ));
-  }
+  //servicios
+
+
+
   getLoadResult (nameFile):void{
     this.conexionBackService.getLoadResult(nameFile).subscribe(resp =>(
       this.resultLoad3 = resp.resultLoad
       //console.log(resp.resultLoad)
     ));
   }
-  getAtributosTable(tableName):void{
-    this.conexionBackService.getAtributosTable(tableName).subscribe(atributo =>(
-      this.atributo=atributo
 
-    ));
-  }
-  getConexionResult (datosConexion):void{
-    this.conexionBackService.getConexionResult(datosConexion).subscribe(result=> this.ordenarConexion(result));
-  }
-  getUnionCampos (unionCampos):void{
+
+  getUnionCampos (unionCampos):void{//le digo uneme estos campos
     this.conexionBackService.getUnionCampos(unionCampos).subscribe(myTabla=> (this.camposUnidos3=myTabla));
   }
-  getCambiarValor(cambio):void{
-    this.conexionBackService.getCambiarValor(cambio).subscribe(nuevoArray =>(
-      console.log(nuevoArray)
 
-    ));
 
-  }
-  //obtiene tablas si el el resultado de la conexion es correcto y limpia datos
-  ordenarConexion(result){
-    this.resultConexion=result.isConexion;
-    if(result.isConexion==true)this.getTablas();
-    else {
-      this.datosTablaElegida=undefined;
-      this.mensajeError="Error en la conexion";
-    }
-  }
-  //le pregunta al servidor si la conexion es correcta
-  tryConexion(f: NgForm){
-
-    this.getConexionResult(f.value);
-    this.datosTablaElegida = undefined;
-  }
   //END COMPONENTE 1 -----------------------------------------------------------
 
   //COMPONENTE 2: conectar solo base de datos
@@ -209,22 +165,12 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
   //END COMPONENTE 3
 
-  //COMPOENTE 5: Cambiar valor
-  CambiarValor5(f4: NgForm){
-    this.getCambiarValor(f4.value.columna+"_"+f4.value.inicial+"_"+f4.value.cambiar+"_"+f4.value.tabla);
 
-    //console.log(f4.value);
-  }
-  /*tryConexion(f: NgForm){
-
-    this.getConexionResult(f.value);
-    this.datosTablaElegida = undefined;
-  }*/
 
   //Control de ventanas (modales) y union de componentes
   openModal(e):void{
     var part = e.subject.part;
-    if(part.data.componente == "Extraccion SQL") $('#tableModal').modal('show');
+  
     if(part.data.componente == "Base de Datos") $('#databaseModal').modal('show');
 
     if(part.data.componente == "Unir Datos") {
@@ -248,37 +194,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
       //SI esta unida a database component2:
       //Sino Mostrar mensaje de que no esta unida o los datos del componente database estan erroneos
     }
-    if(part.data.componente == "Cambiar Valor") {//Si quiere abrir el componente 'Cambiar Valor'
-      if(this.resultConexion){//Si se quiere unir con Extraccion Tabla
 
-        var extraccion_cambiarValor=false;
-        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
-          //Si esta unida base de datos con union datos
-          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==2 && this.myDiagram.model.linkDataArray[nodo]["to"]==3)
-          extraccion_cambiarValor=true;
-        }
-        if(extraccion_cambiarValor){
-          this.emitToConsole("Extraccion Tabla y Cambiar Valor conectados correctamente");
-          $('#cambiarValorModal').modal('show');
-        }
-
-      }
-      if(this.isUnion3){//Si se quiere unir con Unir Datos
-        var unirDatos_cambiarValor=false;
-        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
-          //Si esta unida base de datos con union datos
-          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==4 && this.myDiagram.model.linkDataArray[nodo]["to"]==3)
-          unirDatos_cambiarValor=true;
-        }
-        if(unirDatos_cambiarValor){
-          this.emitToConsole("Unir Datos y Cambiar Valor conectados correctamente");
-          $('#cambiarValorModal').modal('show');
-        }
-
-      }
-      //else this.emitToConsole("Cambiar Valor no esta unido a ningun componente");
-
-    }
     if(part.data.componente == "Cargar Datos"){//Si quiere abrir el componente 'Cargar Datos'
 
       if(this.unionCampos3.campos!="" && this.unionCampos3.tablas!="")//y unida 'Cargar Datos' unido a 'Unir Datos'

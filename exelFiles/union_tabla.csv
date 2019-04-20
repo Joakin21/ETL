@@ -1,21 +1,11 @@
-id_cliente,nombre,desa
-1,Carlos,desafio1
-1,Josafat ,desafio1
-1,Matias ,desafio1
-1,Kevin,desafio1
-1,Magdiel,desafio1
-1,Carlos,desafio2
-1,Josafat ,desafio2
-1,Matias ,desafio2
-1,Kevin,desafio2
-1,Magdiel,desafio2
-2,Carlos,desafio1
-2,Josafat ,desafio1
-2,Matias ,desafio1
-2,Kevin,desafio1
-2,Magdiel,desafio1
-2,Carlos,desafio2
-2,Josafat ,desafio2
-2,Matias ,desafio2
-2,Kevin,desafio2
-2,Magdiel,desafio2
+id_cliente,rut
+1,19478195-4
+1,19428497-6
+1,15475798-7
+1,19238135-k
+1,18472195-1
+2,19478195-4
+2,19428497-6
+2,15475798-7
+2,19238135-k
+2,18472195-1

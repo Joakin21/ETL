@@ -12,7 +12,8 @@ import { AreaTrabajoComponent } from './area-trabajo/area-trabajo.component';
 import { ConsolaComponent } from './consola/consola.component';
 
 //Servicios
-import {ObjetosService} from './objetos.service'
+import {ObjetosService} from './objetos.service';
+import { BaseDatosComponent } from './base-datos/base-datos.component'
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import {ObjetosService} from './objetos.service'
     MenuObjetosComponent,
     AreaTrabajoComponent,
     ConsolaComponent,
+    BaseDatosComponent,
   ],
   imports: [
     BrowserModule,

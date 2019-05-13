@@ -3,6 +3,8 @@ import { ConexionBackService } from '../conexion-back.service';
 import { HttpClient } from '@angular/common/http';
 import { Objeto } from '../objeto';
 import {NgForm} from '@angular/forms';
+import {BaseDatosComponent} from '../base-datos/base-datos.component';
+import { from } from 'rxjs';
 
 declare var go:any;
 declare var $:any;
@@ -13,6 +15,8 @@ declare var $:any;
 })
 export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   myDiagram:any;
+  //nueva version
+  bases_de_datos:any[];
   @ViewChild('myDiagramDiv') div;
 
   //Objeto Output para emitir a la consola
@@ -30,6 +34,9 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   allAtributos2:any[];
   array_atributos2:any[];
   aIdAtributos2:number[];
+
+  
+  
   //END variables componente 2
 
   //COMPONENTE 3: Unir datos - Variables
@@ -42,7 +49,12 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   //COMPONENTE 4: Cargar Datos - Variables
   resultLoad3:boolean;
 
-  constructor(private conexionBackService:ConexionBackService, private http:HttpClient) { }
+  conex:any;
+  http_client:any;
+  constructor(private conexionBackService:ConexionBackService, private http:HttpClient) {
+    this.conex =  conexionBackService;
+    this.http_client = http;
+   }
 
   ngOnInit() {
 
@@ -171,7 +183,11 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   openModal(e):void{
     var part = e.subject.part;
   
-    if(part.data.componente == "Base de Datos") $('#databaseModal').modal('show');
+    if(part.data.componente == "Base de Datos") {
+      
+      $('#databaseModal').modal('show');
+    
+    }
 
     if(part.data.componente == "Unir Datos") {
 
@@ -231,9 +247,14 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
 
   ngAfterViewInit(){
+    let base_datos = new BaseDatosComponent(this.conex,this.http_client);
+    let base_datos2 = new BaseDatosComponent(this.conex,this.http_client);
+    
     // create a make type from go namespace and assign it to MAKE
         const diagramDiv = this.div.nativeElement;
         var $ = go.GraphObject.make;
+        
+        
         this.myDiagram =
         $(go.Diagram, diagramDiv,
           {
@@ -308,16 +329,25 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
         this.myDiagram.addDiagramListener("TextEdited",e => this.CambiaNombre(e));
 
   }
-
+  
   @Input() //Entrada de nuevos componentes
   //Cuando llega un nuevo componente se agrega al diagrama
   set objetoRecibido(objetoSeleccionado:Objeto){
-
+    let bases_de_datos_temp=[];
     console.log(objetoSeleccionado.id);
     if(this.myDiagram != undefined){//Si el diagrama esta cargado
+      //let bases_de_datos_temp = []
       this.emitToConsole("Objeto agregado: "+objetoSeleccionado.nombre);
       this.myDiagram.model.addNodeData({ key: objetoSeleccionado.id,nombre:objetoSeleccionado.nombre,img:objetoSeleccionado.img,componente:objetoSeleccionado.componente});//add nuevo nodo al modelo
-
+      if(objetoSeleccionado.id == 1){//agrego base de datos component
+        let base_datos = new BaseDatosComponent(this.conex,this.http_client);
+        //base_datos.openModal();
+        console.log(':O');
+        bases_de_datos_temp.push(base_datos);
+        bases_de_datos_temp[0].openModal();
+     
+      }
+      
     }
   }
 

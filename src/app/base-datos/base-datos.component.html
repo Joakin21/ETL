@@ -1,0 +1,44 @@
+<!-- Modal Base de datos-->
+<div class="modal fade bd-example-modal-lg" id="databaseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="kiu">Base de datos</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!--Conexion a la base de datos-->
+        <form #f2="ngForm" (ngSubmit)="tryConexion2(f2)" novalidate>
+
+          <div class="form-group">
+            <select class="form-control" id="sgbd2" name="conex" #conex="ngModel" ngModel required>
+              <option *ngFor="let tab of ['mysql','postgresql','oracle']" [value]="tab">{{tab}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="host" ngModel #host="ngModel" placeholder="Host">
+          </div>
+          <div class="form-group">
+            <input type="number" class="form-control" name="port" ngModel #port="ngModel" placeholder="Puerto">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="user" ngModel #user="ngModel" placeholder="Usuario">
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" name="passwd" ngModel #passwd="ngModel" placeholder="Contraseña">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="db" ngModel #db="ngModel" placeholder="Base de Datos">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Conectarse</button>
+        </form>
+        <br>
+        <h3>{{mensajeConexion}}</h3>
+      </div>
+    </div>
+  </div>
+</div>

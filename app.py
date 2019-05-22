@@ -4,21 +4,18 @@ import petl as etl
 from petl import tocsv, look
 import pymysql,os,time,psycopg2
 
-
 app = Flask(__name__)
 
+#dDBI ={}
+
 dDBI ={
-}
-dDBI["mod"]=pymysql
-"""dDBI ={
-    "host":"locdsalhost",
+    "host":"localhost",
     "port":3306,
     "user":"root",
     "passwd":"cjanz12345",
     "db":"myData",
-    "mod":pymysql
-}"""
-
+    "mod":'mysql'
+}
 def showjson(name):
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, "static/data", str(name)+".json")
@@ -49,14 +46,14 @@ def get_conex(mod,h,p,u,pas,db):
 
 @app.route('/api/conexion', methods=['POST'])
 def get_conexion():
+    """
     dDBI["mod"]=request.get_json()["conex"]
     dDBI["host"]=request.get_json()["host"]
     dDBI["port"]=request.get_json()["port"]
     dDBI["user"]=request.get_json()["user"]
     dDBI["passwd"]=request.get_json()["passwd"]
     dDBI["db"]=request.get_json()["db"]
-
-
+    """
     try:
         conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
         return jsonify({'isConexion':True})#true
@@ -115,6 +112,16 @@ def get_all_atributos():
     myAtributos = showjson('allAtributos')
     return jsonify(myAtributos)
 
+@app.route('/api/atributos_datatype', methods=['GET'])
+def get_atributos_datatype():
+    conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
+    listAtrib="SELECT COLUMN_NAME,TABLE_NAME,DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ="+"'"+str(dDBI["db"])+"'"
+    allAtributos = etl.fromdb(conex,listAtrib)
+    etl.tojson(allAtributos,'./static/data/atributos_datatype.json')#ACA AGREGAR UN IDENTIFICADOR PARA BASE DE DATOS!!!! OJO
+    conex.close()
+    myAtributos = showjson('atributos_datatype')
+    return jsonify(myAtributos)
+
 @app.route('/api/datosTable/<tableName>', methods=['GET'])
 def get_data_table(tableName):
     conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
@@ -150,7 +157,6 @@ def get_load_result(nameFile):
     tableToLoad = etl.fromjson('./static/data/'+str(nameFile)+'.json')
     tocsv(tableToLoad, './exelFiles/'+str(nameFile)+'.csv')
     return jsonify({'resultLoad':True})
-    #return jsonify(aTablas)
 
 if __name__ == '__main__':
     app.run(debug=True)

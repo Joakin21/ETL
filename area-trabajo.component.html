@@ -35,7 +35,6 @@
           <div class="form-group">
             <input type="text" class="form-control" name="db" ngModel #db="ngModel" placeholder="Base de Datos">
           </div>
-
           <button type="submit" class="btn btn-primary">Conectarse</button>
         </form>
         <br>
@@ -144,6 +143,48 @@
           </div>
           <button type="submit" class="btn btn-primary">Conectarse</button>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Modal Calculadora-->
+<div class="modal fade bd-example-modal-lg "  id="calculadoramodal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog mw-100 w-75" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="consulta">Calculadora</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body row">
+        <div class="col-md-5">
+            <form #f2="ngForm" novalidate>
+              <div class="form-group">
+                <textarea class="md-textarea form-control" type="text" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Aplicar</button>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <ul class="list-group">
+              <li *ngFor="let atri of aIdAtributos_datatype" class="list-group-item">
+                <label class="form-check-label" for="{{ 'atri'+ atri }}">
+                  {{allAtributos_datatype[atri].COLUMN_NAME +'('+allAtributos_datatype[atri].TABLE_NAME+')'+ "["+allAtributos_datatype[atri].DATA_TYPE+"]"}}
+                </label>
+              </li>
+            </ul>
+        </div>
+        <div class="col-md-4 text-left">
+          Ejemplo de uso de componente calculadora:
+          <ul>
+            <li>column1 * column2 = newcolumn</li>
+            <li>pow(e,column1)=column2</li>
+            <li>sin(column1)+cos(column2)**2 = newcolumn</li>
+          </ul>       
+            Nota: Usar las funciones de la libreria Math de python
+        </div>
       </div>
     </div>
   </div>

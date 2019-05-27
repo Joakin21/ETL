@@ -130,18 +130,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <form #f2="ngForm" novalidate>
+        <form #f4="ngForm" (ngSubmit)="trysqlquery(f4)" novalidate>
           <div class="form-group">
-            <select class="form-control" id="lang" name="lang1" #conex="ngModel" ngModel required>
+            <select class="form-control" id="tipo" name="tipo1" #conex="ngModel" ngModel required>
               <option>mysql</option>
               <option>postgresql</option>
               <option>oracle</option>
             </select>
           </div>
           <div class="form-group">
-            <textarea class="md-textarea form-control" type="text" rows="10"></textarea>
+            <textarea class="md-textarea form-control" id="query" name="query1" type="text" rows="10" #conex="ngModel" ngModel required></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Conectarse</button>
+          <button type="submit" class="btn btn-primary">Realizar Query</button>
         </form>
       </div>
     </div>

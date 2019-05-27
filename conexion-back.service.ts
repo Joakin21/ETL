@@ -22,6 +22,9 @@ export class ConexionBackService {
   getAtributos_datatype(): Observable<any[]>{
     return this.http.get<any[]>('api/atributos_datatype');
   }
+  getsql_query(datos:any): Observable<any[]>{
+    return this.http.post<any>('api/sql_query',datos);
+  }
   getConexionResult(datosConexion:any): Observable<any>{
     console.log(datosConexion);
     return this.http.post<any>('api/conexion',datosConexion);

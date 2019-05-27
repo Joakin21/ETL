@@ -62,6 +62,25 @@ def get_conexion():
     except pymysql.err.InternalError:
         return jsonify({'isConexion':False})#False
 
+@app.route('/api/sql_query', methods=['POST'])
+def get_query():
+    tipo_db = request.get_json()["tipo1"]
+    query = request.get_json()["query1"]
+    try :
+        conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
+        etl_resultado = etl.fromdb(conex,query)
+        etl.tojson(etl_resultado,'./static/data/sql_query.json')#ACA AGREGAR UN IDENTIFICADOR PARA BASE DE DATOS!!!! OJO
+        return jsonify({'query':True})
+    except pymysql.err.OperationalError as e:
+        s = str(e)
+        return jsonify({'query':False,'err':s})#False
+    except pymysql.err.InternalError as e:
+        s = str(e)
+        return jsonify({'query':False,'err':s})#False
+    except pymysql.err.ProgrammingError as e:
+        s = str(e)
+        return jsonify({'query':False,'err':s})
+
 @app.route('/api/unionCampos', methods=['POST'])
 def get_union_campos():
     campos = request.get_json()["campos"]

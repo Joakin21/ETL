@@ -8,15 +8,16 @@ import { Component, OnInit,Input,EventEmitter } from '@angular/core';
 export class ConsolaComponent implements OnInit {
 
   mens:string;
+  mensajes:string[] =new Array();
 
   constructor() { }
 
   ngOnInit() {
   }
-  @Input() mensajeRecibido:string;
-
-  /*set mensajeRecibido(mensajeToConsole:string){
-    console.log("mensaje: "+mensajeToConsole);
-  }*/
-
+  @Input() 
+  set mensajeRecibido(mensajeRecibido:string){
+    if(mensajeRecibido){
+      this.mensajes.push(mensajeRecibido);
+    } 
+  }
 }

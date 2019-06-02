@@ -4,13 +4,22 @@
 #cuerpoConsola{
 
   overflow-y: auto;
-  height: 100px;
+  height: 150px;
 
 }
+ul{
+  list-style: none;
+	padding: 10px;
+	margin: 0;
+}
+
 h3{
   padding-left: 10px;
 }
 #mensajeConsola{
   padding-left: 10px;
   color: white;
+}
+#mensajes {
+  white-space: pre-wrap;
 }

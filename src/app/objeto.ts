@@ -4,4 +4,5 @@ export class Objeto {
   color: string;
   img:string;
   componente:string;
+  indice:number;
 }

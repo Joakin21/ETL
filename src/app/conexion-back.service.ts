@@ -13,15 +13,14 @@ export class ConexionBackService {
   constructor(private http: HttpClient) { }
 
 
-  getTablas(): Observable<any[]>{
-    return this.http.get<any[]>('api/tablas');
+  getTablas(database:any): Observable<any>{
+    return this.http.post<any>('api/tablas',database);
   }
   getAllAtributos(): Observable<any[]>{
     return this.http.get<any[]>('api/atributos');
   }
 
   getConexionResult(datosConexion:any): Observable<any>{
-    //console.log(datosConexion);
     return this.http.post<any>('api/conexion',datosConexion);
   }
   getUnionCampos(unionCampos:any): Observable<any>{

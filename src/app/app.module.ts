@@ -13,7 +13,8 @@ import { ConsolaComponent } from './consola/consola.component';
 
 //Servicios
 import {ObjetosService} from './objetos.service';
-import { BaseDatosComponent } from './base-datos/base-datos.component'
+import { BaseDatosComponent } from './base-datos/base-datos.component';
+import { ExtraccionTablaComponent } from './extraccion-tabla/extraccion-tabla.component'
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { BaseDatosComponent } from './base-datos/base-datos.component'
     AreaTrabajoComponent,
     ConsolaComponent,
     BaseDatosComponent,
+    ExtraccionTablaComponent,
   ],
   imports: [
     BrowserModule,

@@ -55,15 +55,13 @@ def get_conexion():
     dDBI["user"]=request.get_json()["user"]
     dDBI["passwd"]=request.get_json()["passwd"]
     dDBI["db"]=request.get_json()["db"]
-
-
     try:
         conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
-        return jsonify({'isConexion':True})#true
+        return jsonify({'isConexion':True})
     except pymysql.err.OperationalError:
-        return jsonify({'isConexion':False})#False
+        return jsonify({'isConexion':False})
     except pymysql.err.InternalError:
-        return jsonify({'isConexion':False})#False
+        return jsonify({'isConexion':False})
 
 @app.route('/api/unionCampos', methods=['POST'])
 def get_union_campos():
@@ -95,8 +93,15 @@ def get_cambiar_valor():
 """
 
 
-@app.route('/api/tablas', methods=['GET'])
+@app.route('/api/tablas', methods=['POST'])
 def get_all_tables():
+    dDBI["mod"]=request.get_json()["conex"]
+    dDBI["host"]=request.get_json()["host"]
+    dDBI["port"]=request.get_json()["port"]
+    dDBI["user"]=request.get_json()["user"]
+    dDBI["passwd"]=request.get_json()["passwd"]
+    dDBI["db"]=request.get_json()["db"]
+
     conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
     listTable="SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA ="+"'"+str(dDBI["db"])+"'"
     tablas = etl.fromdb(conex,listTable)

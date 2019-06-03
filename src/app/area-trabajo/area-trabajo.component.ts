@@ -3,6 +3,7 @@ import { ConexionBackService } from '../conexion-back.service';
 import { HttpClient } from '@angular/common/http';
 import { Objeto } from '../objeto';
 import {NgForm} from '@angular/forms';
+//import { runInThisContext } from 'vm';
 
 declare var go:any;
 declare var $:any;
@@ -42,11 +43,14 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   //COMPONENTE 4: Cargar Datos - Variables
   resultLoad3:boolean;
 
+  //COMPONENTE 5: CALCULADORA
+  aIdAtributos_datatype:number[];
+  allAtributos_datatype:any[];
+  
   constructor(private conexionBackService:ConexionBackService, private http:HttpClient) { }
 
-  ngOnInit() {
+  ngOnInit() { }
 
-  }
   //Emitir mensajes a la consola
   emitToConsole(mensaje:string){
     this.myOutputValue2.emit(mensaje);
@@ -56,9 +60,6 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   //Tabla seleccionada desde el modal
 
   //servicios
-
-
-
   getLoadResult (nameFile):void{
     this.conexionBackService.getLoadResult(nameFile).subscribe(resp =>(
       this.resultLoad3 = resp.resultLoad
@@ -66,11 +67,9 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
     ));
   }
 
-
   getUnionCampos (unionCampos):void{//le digo uneme estos campos
     this.conexionBackService.getUnionCampos(unionCampos).subscribe(myTabla=> (this.camposUnidos3=myTabla));
   }
-
 
   //END COMPONENTE 1 -----------------------------------------------------------
 
@@ -83,6 +82,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
     if(result.isConexion==true){
       this.getTablas2();//Segun la cantidad de tablas obtiene sus atributos
       this.getAllAtributos2();
+      this.getAtributos_datatype();
       //this.getAtributosTable2()
 
       this.mensajeConexion="Conectado correctamente";
@@ -95,11 +95,10 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
     }
     this.resultConexion2=result.isConexion;
     console.log("conexion a la base de datos: "+this.resultConexion2);
-
-
   }
   //le pregunta al servidor si la conexion es correcta
   tryConexion2(f2: NgForm){
+    console.log(f2.value);
     this.getConexionResult2(f2.value);
     this.conexionDatabase = f2.value;
   }
@@ -119,8 +118,6 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
     console.log(this.aIdAtributos2);
     //this.aIdAtributos2
   }
-
-
   //END COMPONENTE 2 -----------------------------------------------------------
 
   //COMPONENTE 3: unir campos de los datos que tenga en su entrada
@@ -165,6 +162,41 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
   //END COMPONENTE 3
 
+  //COMPONENTE 7 CONSULTA SQL
+  getsql_query(datos):void{
+    this.conexionBackService.getsql_query(datos).subscribe(result => this.resultado_sql_query(result));
+  }
+  trysqlquery(f4: NgForm){
+   console.log(f4.value); 
+   this.getsql_query(f4.value)
+  }
+  resultado_sql_query(result){
+    if(result.query==true){
+      this.emitToConsole("Consulta Exitosa")
+    }else{
+      this.emitToConsole("Error en la consulta "+result.err)
+    }
+
+  }
+  //END COMPONENTE 4
+
+
+  //COMPONENTE 5 CALCULADORA(ESTA FUNCION SACA NOMBRE COLUMNA, TABLA Y TIPOD DE DATO)
+  getAtributos_datatype():void{
+    this.conexionBackService.getAtributos_datatype().subscribe(atributo => this.after_getAtributos_datatype(atributo));
+  }
+  after_getAtributos_datatype(atributo):void{
+    this.allAtributos_datatype = atributo;
+    var a = [];
+    for(var i =0;i<atributo.length;i++){
+      a.push(i)
+    }
+    this.aIdAtributos_datatype = a;
+    console.log("ESTE ES ALLATRIBUTOSDATATYPE")
+    console.log(this.allAtributos_datatype);
+    //console.log(this.aIdAtributos_datatype);
+  }
+  //END COMPONENTE 5
 
 
   //Control de ventanas (modales) y union de componentes
@@ -220,6 +252,29 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
     }
 
+    if(part.data.componente == "Consulta SQL"){
+      if(this.resultConexion2){//Si la conexion a la base de datos es correcta
+        var dataBase_unionDatos=false;
+        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
+          //Si esta unida base de datos con union datos
+          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==1 && this.myDiagram.model.linkDataArray[nodo]["to"]==7)
+          dataBase_unionDatos=true;
+        }
+        if(dataBase_unionDatos){
+          this.emitToConsole("Base de Datos y Consulta SQL conectados correctamente");
+          $('#sqlqueryModal').modal('show');
+        }
+      }else{
+        this.emitToConsole("Error en los datos que se conectan al componente: Consulta SQL ")
+      }
+
+    } 
+
+    if(part.data.componente == "Calculadora" ){ //si se quiere abrir el componente calculadora
+      if(this.resultConexion2){//Si la conexion a la base de datos es correcta
+        $('#calculadoramodal').modal('show'); //se muestra el modal
+      }
+    } 
   }
   CambiaNombre(e):void{
     var part=e.subject.part;
@@ -229,7 +284,11 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
   }
 
-
+  //####################################################################
+  //
+  //                              GO JS
+  //
+  //####################################################################
   ngAfterViewInit(){
     // create a make type from go namespace and assign it to MAKE
         const diagramDiv = this.div.nativeElement;

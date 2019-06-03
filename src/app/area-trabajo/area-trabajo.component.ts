@@ -33,11 +33,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   aIdAtributos2:number[];
   //END variables componente 2
 
-  //COMPONENTE 3: Unir datos - Variables
-  unionCampos3:any={campos:"",tablas:""};
-  camposUnidos3:any[];
-  atributos3:string[];
-  isUnion3:boolean=false;
+
   //END cariables componente 2
 
   //COMPONENTE 4: Cargar Datos - Variables
@@ -67,9 +63,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
     ));
   }
 
-  getUnionCampos (unionCampos):void{//le digo uneme estos campos
-    this.conexionBackService.getUnionCampos(unionCampos).subscribe(myTabla=> (this.camposUnidos3=myTabla));
-  }
+
 
   //END COMPONENTE 1 -----------------------------------------------------------
 
@@ -120,39 +114,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   }
   //END COMPONENTE 2 -----------------------------------------------------------
 
-  //COMPONENTE 3: unir campos de los datos que tenga en su entrada
-  camposSelected(f3: NgForm){
-    //limpio los valores
-    this.atributos3 = [];
-    this.unionCampos3.campos ="";
-    this.unionCampos3.tablas="";
-    this.isUnion3=false;
-    this.resultLoad3=false;
-    var atribs = [];
-    for (var i=0;i<this.aIdAtributos2.length;i++){
-      if(f3.value["atri"+i]==true){
-        console.log(this.allAtributos2[i]);
-        this.unionCampos3.campos = this.unionCampos3.campos+this.allAtributos2[i].COLUMN_NAME+',';
-        this.unionCampos3.tablas = this.unionCampos3.tablas+this.allAtributos2[i].TABLE_NAME+',';
-        //array de nombre de atributos que selecciono el usuario para mostrar en la tabla
-        atribs.push(this.allAtributos2[i].COLUMN_NAME);
-        this.isUnion3 = true;
-      }
-      //console.log(f3.value["atri"+i]);
-    }
-    this.atributos3 = atribs;
 
-    console.log(this.atributos3);
-
-    if(  this.unionCampos3.campos!="" && this.unionCampos3.tablas!=""){//Si selecciono algunos campos
-      this.unionCampos3.campos = this.unionCampos3.campos.slice(0,-1);//quito la ultima coma
-      this.unionCampos3.tablas = this.unionCampos3.tablas.slice(0,-1);//quito la ultima coma
-      this.getUnionCampos(this.unionCampos3);
-
-
-
-    }
-  }
   loadToDatabase3():void{
     //Si lo que esta unido a mi es el de union then le digo q carge el del archivo union
     this.getLoadResult("union_tabla");
@@ -229,7 +191,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
     if(part.data.componente == "Cargar Datos"){//Si quiere abrir el componente 'Cargar Datos'
 
-      if(this.unionCampos3.campos!="" && this.unionCampos3.tablas!="")//y unida 'Cargar Datos' unido a 'Unir Datos'
+      /*if(this.unionCampos3.campos!="" && this.unionCampos3.tablas!="")//y unida 'Cargar Datos' unido a 'Unir Datos'
       {
         var unionDatos_cargarDatos=false;
         for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
@@ -248,7 +210,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
       else{
         //Mostrar este mensaje en la consola incorporada
         this.emitToConsole("Cargar Datos no esta unido a ningun componente");
-      }
+      }*/
 
     }
 

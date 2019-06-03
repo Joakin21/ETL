@@ -81,27 +81,6 @@ def get_query():
         s = str(e)
         return jsonify({'query':False,'err':s})
 
-@app.route('/api/unionCampos', methods=['POST'])
-def get_union_campos():
-    campos = request.get_json()["campos"]
-    tablas = request.get_json()["tablas"]
-    campos = campos.split(",")
-    tablas = tablas.split(",")
-    conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
-    aResult = []
-    for i in range(len(campos)):
-        #consult = "SELECT "+campos[i]+" FROM "+tablas[i]
-        etl_tabla = etl.fromdb(conex,"SELECT "+campos[i]+" FROM "+tablas[i])
-        aResult.append(etl_tabla)
-    union_tabla = aResult[0]
-    for i in range(len(aResult)-1):
-        union_tabla = etl.crossjoin(union_tabla, aResult[i+1])
-    #Probando como cargaria la union a la base de datos
-
-    etl.tojson(union_tabla,'./static/data/union_tabla.json')
-    conex.close()
-    myUnion = showjson('union_tabla')
-    return jsonify(myUnion)
 
 """@app.route('/api/cambiarValor', methods=['POST'])
 def get_cambiar_valor():

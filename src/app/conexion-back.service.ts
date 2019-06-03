@@ -29,10 +29,6 @@ export class ConexionBackService {
     console.log(datosConexion);
     return this.http.post<any>('api/conexion',datosConexion);
   }
-  getUnionCampos(unionCampos:any): Observable<any>{
-    return this.http.post<any[]>('api/unionCampos',unionCampos);
-  }
-
   getLoadResult(nameFile:any): Observable<any>{
     return this.http.get<any>('api/load/'+nameFile);
   }

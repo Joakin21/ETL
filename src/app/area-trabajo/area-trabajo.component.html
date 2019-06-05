@@ -1,6 +1,50 @@
 
 <div #myDiagramDiv style="width:100%; height:400px; background-color: #DAE4E4;"></div>
+<!-- Modal Extraxion SQL-->
+<div class="modal fade bd-example-modal-lg" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">Extraccion de Datos</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
 
+          <div *ngIf="resultConexion2;else sinConexion">
+              <form><!--Si la conexion esta correcta-->
+                <div class="form-group">
+                  <label for="sgbd">Seleccionar Tabla</label>
+                  <select class="form-control" id="sgbd">
+                    <option *ngFor="let tab of tablas" (click)="tablaElegida(tab)" [value]="tab">{{tab.TABLE_NAME}}</option>
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div *ngIf="datosTablaElegida">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th *ngFor="let atri of atributo" scope="col">{{atri.COLUMN_NAME}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let datos of datosTablaElegida"> <!--Filas -->
+                    <td *ngFor="let atri of atributo">{{datos[atri.COLUMN_NAME]}}</td><!--Columnas -->
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <ng-template #sinConexion><h5>Error en la conexion</h5></ng-template>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar y Salir</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 <!-- Modal Base de datos-->
 <div class="modal fade bd-example-modal-lg" id="databaseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -45,6 +89,7 @@
 </div>
 
 <!-- Modal Cargar Datos-->
+<!--
 <div class="modal fade bd-example-modal-lg" id="cargarDatosModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -64,8 +109,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let datos of camposUnidos3"> <!--Filas -->
-              <td *ngFor="let atri of atributos3">{{datos[atri]}}</td><!--Columnas -->
+            <tr *ngFor="let datos of camposUnidos3"> 
+              <td *ngFor="let atri of atributos3">{{datos[atri]}}</td>
             </tr>
           </tbody>
         </table>
@@ -81,10 +126,10 @@
     </div>
   </div>
 </div>
-
+-->
 <!-- Modal Consulta SQL-->
 <div class="modal fade bd-example-modal-lg" id="sqlqueryModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="consulta">Consulta SQL</h3>
@@ -102,16 +147,33 @@
             </select>
           </div>
           <div class="form-group">
-            <textarea class="md-textarea form-control" id="query" name="query1" type="text" rows="10" #conex="ngModel" ngModel required></textarea>
+            <textarea class="md-textarea form-control" id="query" name="query1" type="text" rows="5" #conex="ngModel" ngModel required></textarea>
           </div>
           <button type="submit" class="btn btn-primary">Realizar Query</button>
         </form>
+
+        <div *ngIf="tablas_componente7">
+
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th *ngFor="let atri of atributos_componente7" scope="col">{{atri}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let datos of tablas_componente7"> <!--Filas -->
+                    <td *ngFor="let atri of atributos_componente7">{{datos[atri]}}</td><!--Columnas -->
+                  </tr>
+                </tbody>
+              </table>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <!--Modal Calculadora-->
+<!--
 <div class="modal fade bd-example-modal-lg "  id="calculadoramodal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog mw-100 w-75" role="document">
     <div class="modal-content">
@@ -138,7 +200,7 @@
                 </label>
               </li>
             </ul>
-        </div>
+        </div>-
         <div class="col-md-4 text-left">
           Ejemplo de uso de componente calculadora:
           <ul>
@@ -152,3 +214,4 @@
     </div>
   </div>
 </div>
+-->

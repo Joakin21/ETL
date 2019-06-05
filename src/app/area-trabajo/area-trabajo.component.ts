@@ -18,16 +18,20 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
   //Objeto Output para emitir a la consola
   @Output() myOutputValue2 = new EventEmitter();
+  objectKeys = Object.keys;
 
   //COMPONENTE 1: EXTRACCION DE TABLA ESPECIFICA DE UNA BASE DE DATOS - Variables
-
+  tablaElejida:string="";
+  datosTablaElegida:any[];
+  tablas:any[];
+  atributo:any[];
   //END Variables componente 1
 
   //COMPONENTE 2: conectar solo base de datos - Variables
   mensajeConexion:string = "Sin Conexion";
   resultConexion2:boolean;
   conexionDatabase:any;
-  tablas2:any[];
+  
   allAtributos2:any[];
   array_atributos2:any[];
   aIdAtributos2:number[];
@@ -62,7 +66,24 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
       //console.log(resp.resultLoad)
     ));
   }
+  //COMPONENTE 1: Extraer tabla
+  tablaElegida(tab):void{
+    this.getDatos(tab.TABLE_NAME);//pasa los datos a un arreglo
+    this.getAtributosTable(tab.TABLE_NAME);
+    var tabla = tab.TABLE_NAME;
+    this.tablaElejida=tabla;
+}
+getDatos (tableName):void{
+  this.conexionBackService.getDatos(tableName).subscribe(tasks =>(
+    this.datosTablaElegida=tasks
+  ));
+}
+getAtributosTable(tableName):void{
+  this.conexionBackService.getAtributosTable(tableName).subscribe(atributo =>(
+    this.atributo=atributo
 
+  ));
+}
 
 
   //END COMPONENTE 1 -----------------------------------------------------------
@@ -74,7 +95,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   //Verifica si la conexion es correcta
   ordenarConexion2(result){
     if(result.isConexion==true){
-      this.getTablas2();//Segun la cantidad de tablas obtiene sus atributos
+      this.getTablas();//Segun la cantidad de tablas obtiene sus atributos
       this.getAllAtributos2();
       this.getAtributos_datatype();
       //this.getAtributosTable2()
@@ -96,8 +117,8 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
     this.getConexionResult2(f2.value);
     this.conexionDatabase = f2.value;
   }
-  getTablas2 ():void{
-    this.conexionBackService.getTablas().subscribe(tablas =>(this.tablas2 = tablas));
+  getTablas ():void{
+    this.conexionBackService.getTablas().subscribe(tablas =>(this.tablas = tablas));
   }
   getAllAtributos2():void{
     this.conexionBackService.getAllAtributos().subscribe(atributo => this.after_getAllAtributos2(atributo));
@@ -125,6 +146,10 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   //END COMPONENTE 3
 
   //COMPONENTE 7 CONSULTA SQL
+  tablas_componente7:any[];
+  atributos_componente7:any[] = [];
+
+
   getsql_query(datos):void{
     this.conexionBackService.getsql_query(datos).subscribe(result => this.resultado_sql_query(result));
   }
@@ -133,10 +158,17 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
    this.getsql_query(f4.value)
   }
   resultado_sql_query(result){
-    if(result.query==true){
-      this.emitToConsole("Consulta Exitosa")
-    }else{
+    
+    if(Object.keys(result)[0] == "err"){
       this.emitToConsole("Error en la consulta "+result.err)
+      this.tablas_componente7 = null
+      this.atributos_componente7 = null
+    }
+    else{
+      this.tablas_componente7 = result;
+      this.atributos_componente7 = Object.keys(result[0])
+      console.log(this.tablas_componente7)
+      console.log(this.atributos_componente7)
     }
 
   }
@@ -167,27 +199,6 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   
     if(part.data.componente == "Base de Datos") $('#databaseModal').modal('show');
 
-    if(part.data.componente == "Unir Datos") {
-
-      if(this.resultConexion2){//Si la conexion a la base de datos es correcta
-        var dataBase_unionDatos=false;
-        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
-          //Si esta unida base de datos con union datos
-          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==1 && this.myDiagram.model.linkDataArray[nodo]["to"]==4)
-          dataBase_unionDatos=true;
-        }
-        if(dataBase_unionDatos){
-          this.emitToConsole("Base de Datos y Unir Datos conectados correctamente");
-          $('#unionModal').modal('show');
-        }
-
-        //console.log("Unir Datos no esta unido a ningun componente");
-
-      }else this.emitToConsole("Error en los datos que se conectan al componente: Unir Datos ")
-      //console.log("Error en los datos que se conectan al componente: Unir Datos ");
-      //SI esta unida a database component2:
-      //Sino Mostrar mensaje de que no esta unida o los datos del componente database estan erroneos
-    }
 
     if(part.data.componente == "Cargar Datos"){//Si quiere abrir el componente 'Cargar Datos'
 
@@ -213,6 +224,23 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
       }*/
 
     }
+    if(part.data.componente == "Extraccion Tabla"){
+      if(this.resultConexion2){//Si la conexion a la base de datos es correcta
+        var dataBase_extraccionTabla=false;
+        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
+          //Si esta unida base de datos con union datos
+          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==1 && this.myDiagram.model.linkDataArray[nodo]["to"]==2)
+          dataBase_extraccionTabla=true;
+        }
+        if(dataBase_extraccionTabla){
+          this.emitToConsole("Base de Datos y Extraccion Tabla conectados correctamente");
+          $('#tableModal').modal('show');
+        }
+      }else{
+        this.emitToConsole("Error en los datos que se conectan al componente: Extraccion Tabla ")
+      }
+
+    } 
 
     if(part.data.componente == "Consulta SQL"){
       if(this.resultConexion2){//Si la conexion a la base de datos es correcta

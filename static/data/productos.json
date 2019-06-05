@@ -1,1 +1,1 @@
-[{"precio": 15000, "id": 1, "nombre": "celular"}, {"precio": 60000, "id": 2, "nombre": "computador"}]
+[{"nombre": "celular", "precio": 15000, "id": 1}, {"nombre": "computador", "precio": 60000, "id": 2}]

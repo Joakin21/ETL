@@ -9,13 +9,16 @@ app = Flask(__name__)
 #dDBI ={}
 
 dDBI ={
-    "host":"localhost",
+}
+dDBI["mod"]=pymysql
+"""dDBI ={
+    "host":"locdsalhost",
     "port":3306,
     "user":"root",
     "passwd":"cjanz12345",
     "db":"myData",
-    "mod":'mysql'
-}
+    "mod":pymysql
+}"""
 def showjson(name):
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, "static/data", str(name)+".json")
@@ -46,14 +49,14 @@ def get_conex(mod,h,p,u,pas,db):
 
 @app.route('/api/conexion', methods=['POST'])
 def get_conexion():
-    """
+    
     dDBI["mod"]=request.get_json()["conex"]
     dDBI["host"]=request.get_json()["host"]
     dDBI["port"]=request.get_json()["port"]
     dDBI["user"]=request.get_json()["user"]
     dDBI["passwd"]=request.get_json()["passwd"]
     dDBI["db"]=request.get_json()["db"]
-    """
+    
     try:
         conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
         return jsonify({'isConexion':True})#true
@@ -70,7 +73,8 @@ def get_query():
         conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
         etl_resultado = etl.fromdb(conex,query)
         etl.tojson(etl_resultado,'./static/data/sql_query.json')#ACA AGREGAR UN IDENTIFICADOR PARA BASE DE DATOS!!!! OJO
-        return jsonify({'query':True})
+        aTablas = showjson('sql_query')
+        return jsonify(aTablas)
     except pymysql.err.OperationalError as e:
         s = str(e)
         return jsonify({'query':False,'err':s})#False

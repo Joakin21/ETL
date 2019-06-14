@@ -22,7 +22,7 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 
   //COMPONENTE 1: EXTRACCION DE TABLA ESPECIFICA DE UNA BASE DE DATOS - Variables
   tablaElejida:string="";
-  datosTablaElegida:any[];
+  datosTablaElegida:any[] =[];
   tablas:any[];
   atributo:any[];
   //END Variables componente 1
@@ -44,8 +44,8 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
   resultLoad3:boolean;
 
   //COMPONENTE 5: CALCULADORA
-  aIdAtributos_datatype:number[];
-  allAtributos_datatype:any[];
+  respaldoDatosCalculadoraSQL:any[]
+  respaldoDatosCalculadoraTabla:any[]
   
   constructor(private conexionBackService:ConexionBackService, private http:HttpClient) { }
 
@@ -75,13 +75,16 @@ export class AreaTrabajoComponent implements AfterViewInit,OnInit {
 }
 getDatos (tableName):void{
   this.conexionBackService.getDatos(tableName).subscribe(tasks =>(
-    this.datosTablaElegida=tasks
+    this.datosTablaElegida=tasks,
+    //Respaldo ---------------------------
+    this.respaldoDatosCalculadoraTabla = tasks
+    
+    //-------------------------------------
   ));
 }
 getAtributosTable(tableName):void{
   this.conexionBackService.getAtributosTable(tableName).subscribe(atributo =>(
     this.atributo=atributo
-
   ));
 }
 
@@ -97,7 +100,6 @@ getAtributosTable(tableName):void{
     if(result.isConexion==true){
       this.getTablas();//Segun la cantidad de tablas obtiene sus atributos
       this.getAllAtributos2();
-      this.getAtributos_datatype();
       //this.getAtributosTable2()
 
       this.mensajeConexion="Conectado correctamente";
@@ -148,7 +150,20 @@ getAtributosTable(tableName):void{
   //COMPONENTE 7 CONSULTA SQL
   tablas_componente7:any[];
   atributos_componente7:any[] = [];
+  campos_numericos:string[] = [];
 
+  getCamposNumericos(datosTabla,atributosTabla){
+    var i = 0
+    for(var dato in datosTabla[0]){
+      console.log(typeof datosTabla[0][dato])
+      if (typeof datosTabla[0][dato] == "number"){
+        this.campos_numericos.push(atributosTabla[i]);
+      }
+      i++
+    }
+    console.log(this.campos_numericos);
+
+  }
 
   getsql_query(datos):void{
     this.conexionBackService.getsql_query(datos).subscribe(result => this.resultado_sql_query(result));
@@ -167,8 +182,12 @@ getAtributosTable(tableName):void{
     else{
       this.tablas_componente7 = result;
       this.atributos_componente7 = Object.keys(result[0])
+      //Respaldo ---------------------------
+      this.respaldoDatosCalculadoraSQL = result
+      //-------------------------------------
       console.log(this.tablas_componente7)
       console.log(this.atributos_componente7)
+      this.getCamposNumericos(this.tablas_componente7, this.atributos_componente7)
     }
 
   }
@@ -176,22 +195,79 @@ getAtributosTable(tableName):void{
 
 
   //COMPONENTE 5 CALCULADORA(ESTA FUNCION SACA NOMBRE COLUMNA, TABLA Y TIPOD DE DATO)
-  getAtributos_datatype():void{
-    this.conexionBackService.getAtributos_datatype().subscribe(atributo => this.after_getAtributos_datatype(atributo));
+  datos_elegidos_componente7(datosSelected:string):void{
+    console.log(datosSelected);
   }
-  after_getAtributos_datatype(atributo):void{
-    this.allAtributos_datatype = atributo;
-    var a = [];
-    for(var i =0;i<atributo.length;i++){
-      a.push(i)
+  con_extraccionTab_calculadora:boolean = false;
+  con_consultaSQL_calculadora:boolean = false;
+  datosCalculadora:any[]
+  atributosCalculadora:any[]
+
+  opcionDatosCalculadora:number
+  eleccionDatos(opcion:number):void{
+    this.opcionDatosCalculadora = opcion
+    if(opcion == 1){
+      this.datosCalculadora = this.tablas_componente7
+      this.atributosCalculadora = this.atributos_componente7
+      /*this.respaldoDatosCalculadora = this.tablas_componente7
+      this.respaldoAtributosCalculadora = this.atributos_componente7*/
+      this.conexionBackService.asignarTabla(this.tablas_componente7).subscribe(result=> console.log(result));
     }
-    this.aIdAtributos_datatype = a;
-    console.log("ESTE ES ALLATRIBUTOSDATATYPE")
-    console.log(this.allAtributos_datatype);
-    //console.log(this.aIdAtributos_datatype);
+    if(opcion == 2){
+      this.datosCalculadora = this.datosTablaElegida
+      this.atributosCalculadora = this.atributo
+      /*this.respaldoDatosCalculadora = this.datosTablaElegida
+      this.respaldoAtributosCalculadora = this.atributo*/
+      this.conexionBackService.asignarTabla(this.datosTablaElegida).subscribe(result=> console.log(result));
+    }
+  }
+
+  comprobacionCalculos(f3: NgForm){
+    console.log(f3.value.calculos);
+    this.conexionBackService.aplicarCalculos(f3.value.calculos).subscribe(result=> this.postCalcular(result))
+  }
+  postCalcular(result){
+    if(result){
+      this.datosCalculadora = result
+      if(this.opcionDatosCalculadora == 1){
+        this.tablas_componente7 = result
+      }
+      if(this.opcionDatosCalculadora == 2){
+        this.datosTablaElegida = result
+      }
+    }
+    else{
+      this.emitToConsole("Entrada incorrecta")
+    }
+  }
+  deshacer(){
+      if(this.opcionDatosCalculadora == 1){
+        this.conexionBackService.asignarTabla(this.respaldoDatosCalculadoraSQL).subscribe(result=> console.log(result));
+        this.datosCalculadora = this.respaldoDatosCalculadoraSQL
+        this.tablas_componente7 = this.respaldoDatosCalculadoraSQL
+      }
+      if(this.opcionDatosCalculadora == 2){
+        this.conexionBackService.asignarTabla(this.respaldoDatosCalculadoraTabla).subscribe(result=> console.log(result));
+        this.datosCalculadora = this.respaldoDatosCalculadoraTabla
+        this.datosTablaElegida = this.respaldoDatosCalculadoraTabla
+      }
+
   }
   //END COMPONENTE 5
-
+  //CCOMPONENTE 6 CARGAR DATOS
+  mensajeCargaDatos:string;
+  cargarArchivo(f5: NgForm){
+    this.conexionBackService.getLoadResult(f5.value.nombreArchivo).subscribe(result=> this.postCargarDatos(result))
+  }
+  postCargarDatos(result){
+    if(result){
+      this.mensajeCargaDatos="Carga Exitosa"
+      this.emitToConsole("Carga Exitosa");
+    }else{
+      this.mensajeCargaDatos="Error en la Carga de Datos"
+      this.emitToConsole("Error en la Carga de Datos");
+    }
+  }
 
   //Control de ventanas (modales) y union de componentes
   openModal(e):void{
@@ -199,7 +275,7 @@ getAtributosTable(tableName):void{
   
     if(part.data.componente == "Base de Datos") $('#databaseModal').modal('show');
 
-
+    
     if(part.data.componente == "Cargar Datos"){//Si quiere abrir el componente 'Cargar Datos'
 
       /*if(this.unionCampos3.campos!="" && this.unionCampos3.tablas!="")//y unida 'Cargar Datos' unido a 'Unir Datos'
@@ -241,7 +317,24 @@ getAtributosTable(tableName):void{
       }
 
     } 
-
+    if(part.data.componente == "Cargar Datos"){
+      var calculadora_cargarDatos=false;
+      if(this.resultConexion2){
+        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
+          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==8 && this.myDiagram.model.linkDataArray[nodo]["to"]==6)
+          calculadora_cargarDatos=true;
+        }
+        if(calculadora_cargarDatos){
+          this.emitToConsole("Calculadora y Cargar Datos conectados correctamente");
+          $('#cargarmodal').modal('show');
+        }else{
+          this.emitToConsole("Error, Cargar Datos debe estar conectado a un compoente de transformacion ")
+        }
+      }
+      else{
+        this.emitToConsole("Error, No estas conectado a una base de datos")
+      }
+    }
     if(part.data.componente == "Consulta SQL"){
       if(this.resultConexion2){//Si la conexion a la base de datos es correcta
         var dataBase_unionDatos=false;
@@ -261,8 +354,35 @@ getAtributosTable(tableName):void{
     } 
 
     if(part.data.componente == "Calculadora" ){ //si se quiere abrir el componente calculadora
-      if(this.resultConexion2){//Si la conexion a la base de datos es correcta
-        $('#calculadoramodal').modal('show'); //se muestra el modal
+      //para la parte donde se muestra la tabla
+      /*con_extraccionTab_calculadora
+      on_consultaSQL_calculadora*/
+      this.con_consultaSQL_calculadora = false
+      this.con_extraccionTab_calculadora = false
+      if(this.resultConexion2 && this.tablas_componente7){
+        
+        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
+          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==7 && this.myDiagram.model.linkDataArray[nodo]["to"]==8)
+            this.con_consultaSQL_calculadora = true 
+        }
+      }
+      
+      if(this.resultConexion2 && this.datosTablaElegida.length>0){
+         
+        for(var nodo=0;nodo<this.myDiagram.model.linkDataArray.length;nodo++){
+          //Si esta unida base de datos con union datos
+          if(this.myDiagram.model.linkDataArray[nodo]["from"] ==2 && this.myDiagram.model.linkDataArray[nodo]["to"]==8)
+          this.con_extraccionTab_calculadora = true
+        }
+      }
+      //para abrir el modal
+      if(this.con_consultaSQL_calculadora || this.con_extraccionTab_calculadora){//Si la conexion a la base de datos es correcta
+
+          this.emitToConsole("Componente(s) de extraccion y/o Consulta SQL conectado(s) correctamente");
+          $('#calculadoramodal').modal('show'); 
+      }else{
+
+        this.emitToConsole("Error, Calculador necesita estar conectada a un componente de extraccion o la base de datos no tiene conexion")
       }
     } 
   }

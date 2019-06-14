@@ -26,9 +26,7 @@ export class ConexionBackService {
   getAllAtributos(): Observable<any[]>{
     return this.http.get<any[]>('api/atributos');
   }
-  getAtributos_datatype(): Observable<any[]>{
-    return this.http.get<any[]>('api/atributos_datatype');
-  }
+
   getsql_query(datos:any): Observable<any[]>{
     return this.http.post<any>('api/sql_query',datos);
   }
@@ -38,6 +36,11 @@ export class ConexionBackService {
   getLoadResult(nameFile:any): Observable<any>{
     return this.http.get<any>('api/load/'+nameFile);
   }
-  
 
+  asignarTabla(tablaElegida:any): Observable<any>{
+    return this.http.post<any>('api/asignar',tablaElegida);
+  }
+  aplicarCalculos(calculos:string): Observable<any>{
+    return this.http.get<any>('api/calcular/'+calculos);
+  }
 }

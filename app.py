@@ -3,6 +3,7 @@ from flask_cors import CORS
 import petl as etl
 from petl import tocsv, look
 import pymysql,os,time,psycopg2
+import re
 
 app = Flask(__name__)
 
@@ -46,6 +47,46 @@ def get_conex(mod,h,p,u,pas,db):
                       user=u, password=pas,
                       dbname=db)
     return cDBI
+
+@app.route('/api/asignar', methods=['POST'])
+def post_asignar(): 
+    data = request.get_json()
+    table = etl.fromdicts(data)
+    etl.tojson(table,'./static/data/tabalaElegidaCalculadora.json')
+    return jsonify(True)
+
+@app.route('/api/calcular/<calculos>', methods=['GET'])
+def get_calculos(calculos):
+    try:
+        table1 = etl.fromjson('./static/data/tabalaElegidaCalculadora.json')
+        campos_y_valores = re.split('\=|\+|\-|\/|\*',calculos)
+        campoElegido = campos_y_valores[0].lstrip().rstrip()
+        campos_a_operar = campos_y_valores[1:]
+        #get math symbol
+        operaciones = []
+        for i in calculos:
+            if(i=='+' or i=='-' or i=='/' or i=='*'):
+                operaciones.append(i)	
+        #quito espacios
+        for i in range(len(campos_a_operar)): 
+            campos_a_operar[i]=campos_a_operar[i].lstrip().rstrip()
+        #agrego row
+        for i in range(len(campos_a_operar)):
+            if campos_a_operar[i].isdigit()==False:
+                campos_a_operar[i] = 'row.'+campos_a_operar[i]
+        #formulo el eval
+        operacion_final = ""
+        for i in range(len(operaciones)):
+            operacion_final +=  campos_a_operar[i]+operaciones[i]
+        operacion_final +=campos_a_operar[len(campos_a_operar)-1]
+
+        table2 = etl.convert(table1, campoElegido, lambda v,row: eval(operacion_final),pass_row=True)
+        #etl.tojson(table2,"./static/data/calculos.json")
+        etl.tojson(table2,'./static/data/tabalaElegidaCalculadora.json')
+        rv = showjson("tabalaElegidaCalculadora")
+        return jsonify(rv)
+    except:
+        return jsonify(False)
 
 @app.route('/api/conexion', methods=['POST'])
 def get_conexion():
@@ -114,15 +155,7 @@ def get_all_atributos():
     myAtributos = showjson('allAtributos')
     return jsonify(myAtributos)
 
-@app.route('/api/atributos_datatype', methods=['GET'])
-def get_atributos_datatype():
-    conex = get_conex(dDBI["mod"],dDBI["host"],dDBI["port"],dDBI["user"], dDBI["passwd"],dDBI["db"])
-    listAtrib="SELECT COLUMN_NAME,TABLE_NAME,DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA ="+"'"+str(dDBI["db"])+"'"
-    allAtributos = etl.fromdb(conex,listAtrib)
-    etl.tojson(allAtributos,'./static/data/atributos_datatype.json')#ACA AGREGAR UN IDENTIFICADOR PARA BASE DE DATOS!!!! OJO
-    conex.close()
-    myAtributos = showjson('atributos_datatype')
-    return jsonify(myAtributos)
+
 
 @app.route('/api/datosTable/<tableName>', methods=['GET'])
 def get_data_table(tableName):
@@ -156,9 +189,14 @@ def get_atributosTable(tableName):
 
 @app.route('/api/load/<nameFile>', methods=['GET'])
 def get_load_result(nameFile):
-    tableToLoad = etl.fromjson('./static/data/'+str(nameFile)+'.json')
-    tocsv(tableToLoad, './exelFiles/'+str(nameFile)+'.csv')
-    return jsonify({'resultLoad':True})
+    
+        table1 = etl.fromjson('./static/data/tabalaElegidaCalculadora.json')
+        tocsv(table1, './exelFiles/'+str(nameFile)+'.csv')
+        etl.tohtml(table1, './exelFiles/'+str(nameFile)+'.html',caption=str(nameFile))
+        return jsonify(True)
+    
+        #return jsonify(False)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

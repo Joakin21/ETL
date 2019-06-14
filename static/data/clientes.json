@@ -1,1 +1,1 @@
-[{"id_cliente": 1, "nom_cliente": "Juanito", "email": "juan@gmail.com"}, {"id_cliente": 2, "nom_cliente": "Pedrito", "email": "ped@gmail.com"}]
+[{"nom_cliente": "Juanito", "id_cliente": 1, "email": "juan@gmail.com"}, {"nom_cliente": "Pedrito", "id_cliente": 2, "email": "ped@gmail.com"}]

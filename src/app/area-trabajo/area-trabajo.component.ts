@@ -200,8 +200,9 @@ getAtributosTable(tableName):void{
   }
   con_extraccionTab_calculadora:boolean = false;
   con_consultaSQL_calculadora:boolean = false;
-  datosCalculadora:any[]
-  atributosCalculadora:any[]
+  datosCalculadora:any[];
+  atributosCalculadora:any[];
+  mensajeCalculadora:string;
 
   opcionDatosCalculadora:number
   eleccionDatos(opcion:number):void{
@@ -235,9 +236,12 @@ getAtributosTable(tableName):void{
       if(this.opcionDatosCalculadora == 2){
         this.datosTablaElegida = result
       }
+      this.mensajeCalculadora = "Operaciones aplicadas correctamente"
+      this.emitToConsole("Operaciones aplicadas correctamente")
     }
     else{
-      this.emitToConsole("Entrada incorrecta")
+      this.mensajeCalculadora = "Error en la entrada de campos"
+      this.emitToConsole("Error en la entrada de campos")
     }
   }
   deshacer(){
@@ -251,6 +255,7 @@ getAtributosTable(tableName):void{
         this.datosCalculadora = this.respaldoDatosCalculadoraTabla
         this.datosTablaElegida = this.respaldoDatosCalculadoraTabla
       }
+      this.emitToConsole("Se deshacieron los cambios");
 
   }
   //END COMPONENTE 5

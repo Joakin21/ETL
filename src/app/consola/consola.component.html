@@ -1,14 +1,13 @@
+
 <div id="consola">
-<h4>Consola</h4>
-<div id="cuerpoConsola">
-
-<div *ngIf="mensajeRecibido">
-  <p id="mensajeConsola">
-    {{mensajeRecibido}}
-
-  </p>
-  <br>
-</div>
-
-</div>
-</div>
+  <h4>Consola</h4>
+  <div id="cuerpoConsola">
+  
+  <div *ngIf="mensajes">
+      <ul class="listaMensajes">
+          <li *ngFor="let m of mensajes"> {{m}}</li>
+      </ul>
+  </div>
+  
+  </div>
+  </div>

@@ -55,13 +55,26 @@ def post_asignar():
     etl.tojson(table,'./static/data/tabalaElegidaCalculadora.json')
     return jsonify(True)
 
+def validarCampo(table, campo):
+    camposTable = table[0]
+    valido = False
+    i = 0
+    while(valido == False and i<len(camposTable)):
+        if camposTable[i] == campo:
+            if str(table[str(campo)][0]).isdigit():
+                valido = True
+                
+        i+=1
+    return valido
+
 @app.route('/api/calcular/<calculos>', methods=['GET'])
 def get_calculos(calculos):
     try:
         table1 = etl.fromjson('./static/data/tabalaElegidaCalculadora.json')
+
         campos_y_valores = re.split('\=|\+|\-|\/|\*',calculos)
         campoElegido = campos_y_valores[0].lstrip().rstrip()
-        campos_a_operar = campos_y_valores[1:]
+        campos_a_operar = campos_y_valores[1:]  
         #get math symbol
         operaciones = []
         for i in calculos:
@@ -70,21 +83,34 @@ def get_calculos(calculos):
         #quito espacios
         for i in range(len(campos_a_operar)): 
             campos_a_operar[i]=campos_a_operar[i].lstrip().rstrip()
-        #agrego row
-        for i in range(len(campos_a_operar)):
+        
+        #Validacion de datos ------------------------------------------------
+        todosValidados = True
+        i = 0
+        while(todosValidados and i<len(campos_a_operar)):
             if campos_a_operar[i].isdigit()==False:
-                campos_a_operar[i] = 'row.'+campos_a_operar[i]
-        #formulo el eval
-        operacion_final = ""
-        for i in range(len(operaciones)):
-            operacion_final +=  campos_a_operar[i]+operaciones[i]
-        operacion_final +=campos_a_operar[len(campos_a_operar)-1]
+                todosValidados = validarCampo(table1,campos_a_operar[i])
+            i += 1
+        print(todosValidados)
+        #---------------------------------------------------------------------
+        if todosValidados:
+            #agrego row
+            for i in range(len(campos_a_operar)):
+                if campos_a_operar[i].isdigit()==False:
+                    campos_a_operar[i] = 'row.'+campos_a_operar[i]
+            #formulo el eval
+            operacion_final = ""
+            for i in range(len(operaciones)):
+                operacion_final +=  campos_a_operar[i]+operaciones[i]
+            operacion_final +=campos_a_operar[len(campos_a_operar)-1]
 
-        table2 = etl.convert(table1, campoElegido, lambda v,row: eval(operacion_final),pass_row=True)
-        #etl.tojson(table2,"./static/data/calculos.json")
-        etl.tojson(table2,'./static/data/tabalaElegidaCalculadora.json')
-        rv = showjson("tabalaElegidaCalculadora")
-        return jsonify(rv)
+            table2 = etl.convert(table1, campoElegido, lambda v,row: eval(operacion_final),pass_row=True)
+            #etl.tojson(table2,"./static/data/calculos.json")
+            etl.tojson(table2,'./static/data/tabalaElegidaCalculadora.json')
+            rv = showjson("tabalaElegidaCalculadora")
+            return jsonify(rv)
+        else:
+            return jsonify(False)  
     except:
         return jsonify(False)
 

@@ -7,10 +7,19 @@
   height: 150px;
 
 }
-h3{
+ul{
+  list-style: none;
+	padding: 10px;
+	margin: 0;
+}
+
+h4{
   padding-left: 10px;
 }
 #mensajeConsola{
   padding-left: 10px;
   color: white;
+}
+#mensajes {
+  white-space: pre-wrap;
 }

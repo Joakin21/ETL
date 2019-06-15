@@ -228,7 +228,12 @@
               <button type="submit" class="btn btn-primary">aplicar</button>
             </form>
             <br>
+          
             <button class="btn btn-primary" (click)="deshacer()">deshacer cambios</button>
+            <br>
+            <div *ngIf="mensajeCalculadora">
+              <h4>{{mensajeCalculadora}}</h4>
+            </div>
           </div>
         </div>        
         

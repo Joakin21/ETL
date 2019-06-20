@@ -220,7 +220,7 @@
 
           <br><br>
           <div>
-            <h2>Operaciones sobre la tabla</h2>
+            <h4>Operaciones sobre la tabla</h4>
             <form #f3="ngForm" (ngSubmit)="comprobacionCalculos(f3)" novalidate>
               <div class="form-group"> 
                 <input type="text" class="form-control" name="calculos" ngModel #calculos="ngModel" placeholder="escriba sus operaciones...">
@@ -230,7 +230,7 @@
             <br>
           
             <button class="btn btn-primary" (click)="deshacer()">deshacer cambios</button>
-            <br>
+            <br><br>
             <div *ngIf="mensajeCalculadora">
               <h4>{{mensajeCalculadora}}</h4>
             </div>
@@ -287,6 +287,7 @@
           </div>
           <button type="submit" class="btn btn-primary">Cargar Datos</button>
         </form>
+        <br>
         <div *ngIf="mensajeCargaDatos">
           <h4>{{mensajeCargaDatos}}</h4>
         </div>

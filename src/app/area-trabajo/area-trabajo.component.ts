@@ -224,8 +224,8 @@ getAtributosTable(tableName):void{
   }
 
   comprobacionCalculos(f3: NgForm){
-    console.log(f3.value.calculos);
-    this.conexionBackService.aplicarCalculos(f3.value.calculos).subscribe(result=> this.postCalcular(result))
+    console.log(f3.value);
+    this.conexionBackService.aplicarCalculos(f3.value).subscribe(result=> this.postCalcular(result))
   }
   postCalcular(result){
     if(result){
@@ -255,6 +255,7 @@ getAtributosTable(tableName):void{
         this.datosCalculadora = this.respaldoDatosCalculadoraTabla
         this.datosTablaElegida = this.respaldoDatosCalculadoraTabla
       }
+      this.mensajeCalculadora = "Se deshacieron los cambios"
       this.emitToConsole("Se deshacieron los cambios");
 
   }

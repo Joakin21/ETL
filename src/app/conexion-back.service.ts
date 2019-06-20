@@ -40,7 +40,7 @@ export class ConexionBackService {
   asignarTabla(tablaElegida:any): Observable<any>{
     return this.http.post<any>('api/asignar',tablaElegida);
   }
-  aplicarCalculos(calculos:string): Observable<any>{
-    return this.http.get<any>('api/calcular/'+calculos);
+  aplicarCalculos(calculos:any): Observable<any>{
+    return this.http.post<any>('api/calcular',calculos);
   }
 }
